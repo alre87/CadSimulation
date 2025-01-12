@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Diagnostics;
 using System.IO;
 using CadSimulation;
 
@@ -23,6 +24,7 @@ while (true)
 "   'l': list all inserted shapes\n" +
 "   'a': all shapres total area\n" +
 "   'k': save shapes to file\n" +
+"   'w': load shapes from file\n" +
 "   'q': quit");
 
     var k = Console.ReadKey(true);
@@ -90,6 +92,26 @@ while (true)
                 }
                 Console.WriteLine($"Shapes saved to {FilePath}");
 
+            }
+            continue;
+        case 'w':
+            { 
+                if (File.Exists(FilePath))
+                {
+                    //Reset list
+                    shapes.Clear();
+
+
+                    foreach (var line in File.ReadLines(FilePath))
+                    {
+                        var parsedShape = ShapeFactory.Deserialize(line);
+                        if (parsedShape != null)
+                        {
+                            shapes.Add(parsedShape);
+                        }
+                    }
+                    Console.WriteLine("Shapes loaded from {0} text", FilePath);
+                }
             }
             continue;
     }
@@ -194,6 +216,30 @@ namespace CadSimulation
         public override string ToString()
         {
             return $"T {_base} {_height}";
+        }
+    }
+
+
+    internal static class ShapeFactory
+    {
+        public static Shape? Deserialize(string data)
+        {
+            string[] stringShape = data.Split(' ');
+            switch (stringShape[0])
+            {
+                case "S":
+                    return new Square(int.Parse(stringShape[1]));
+                case "C":
+                    return new Circle(int.Parse(stringShape[1]));
+                case "R":
+                    return new Rectangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
+                case "T":
+                    return new Triangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
+                default: 
+                    return null;
+            }
+
+          
         }
     }
 }
