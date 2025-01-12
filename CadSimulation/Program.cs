@@ -1,7 +1,16 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.IO;
 using CadSimulation;
 
 List<Shape> shapes = new List<Shape>();
+string FilePath = "ExportShapes.txt";
+
+var arguments = Environment.GetCommandLineArgs();
+if (arguments.Length > 1 && arguments[1] == "--path" && arguments.Length > 2)
+{
+    FilePath = arguments[2];
+}
+
 
 while (true)
 {
@@ -13,6 +22,7 @@ while (true)
 "   'r': insert a rectangle\n" +
 "   'l': list all inserted shapes\n" +
 "   'a': all shapres total area\n" +
+"   'k': save shapes to file\n" +
 "   'q': quit");
 
     var k = Console.ReadKey(true);
@@ -69,6 +79,19 @@ while (true)
                 Console.WriteLine("Total area: {0}", area);
             }
             continue;
+        case 'k':
+            {
+                using (StreamWriter SW = new StreamWriter(FilePath))
+                {
+                    foreach (var i in shapes)
+                    {
+                        SW.WriteLine(i.ToString());
+                    }
+                }
+                Console.WriteLine($"Shapes saved to {FilePath}");
+
+            }
+            continue;
     }
     shapes.Add(shape!);
 
@@ -97,6 +120,11 @@ namespace CadSimulation
         {
             Console.WriteLine($"Square, side: {_side}");
         }
+
+        public override string ToString()
+        {
+            return $"S {_side}";
+        }
     }
     internal class Rectangle : Shape
     {
@@ -116,6 +144,11 @@ namespace CadSimulation
         {
             Console.WriteLine($"Rectangle, height: {_height}, weidth: {_weidth}");
         }
+
+        public override string ToString()
+        {
+            return $"R {_height} {_weidth}";
+        }
     }
     internal class Circle : Shape
     {
@@ -134,6 +167,11 @@ namespace CadSimulation
         {
             Console.WriteLine($"Circle, radius: {_radius}");
         }
+
+        public override string ToString()
+        {
+            return $"C {_radius}";
+        }
     }
     internal class Triangle : Shape
     {
@@ -151,6 +189,11 @@ namespace CadSimulation
         void Shape.descr()
         {
             Console.WriteLine($"Triangle, base: {_base}, height: {_height}");
+        }
+
+        public override string ToString()
+        {
+            return $"T {_base} {_height}";
         }
     }
 }
