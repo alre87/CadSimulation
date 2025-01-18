@@ -1,15 +1,32 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using CadSimulation;
 
 List<Shape> shapes = new List<Shape>();
 string FilePath = "ExportShapes.txt";
+bool useJson = false;
+
 
 var arguments = Environment.GetCommandLineArgs();
-if (arguments.Length > 1 && arguments[1] == "--path" && arguments.Length > 2)
+if (arguments.Length > 1)
 {
-    FilePath = arguments[2];
+    for (int i = 1; i < arguments.Length; i++)
+    {
+
+        switch (arguments[i])
+        {
+            case "--path":
+                FilePath = arguments[i + 1];
+                i++;
+                break;
+
+            case "--json":
+                useJson = true;
+                break;
+        }
+    }
 }
 
 
@@ -83,13 +100,23 @@ while (true)
             continue;
         case 'k':
             {
-                using (StreamWriter SW = new StreamWriter(FilePath))
+                if (useJson)
                 {
-                    foreach (var i in shapes)
+                    string JsonResult = JsonSerializer.Serialize(shapes.Select(s => s.SerializeToJson()));
+                    File.WriteAllText(FilePath, JsonResult);
+
+                }
+                else
+                {
+                    using (StreamWriter SW = new StreamWriter(FilePath))
                     {
-                        SW.WriteLine(i.ToString());
+                        foreach (var i in shapes)
+                        {
+                            SW.WriteLine(i.ToString());
+                        }
                     }
                 }
+
                 Console.WriteLine($"Shapes saved to {FilePath}");
 
             }
