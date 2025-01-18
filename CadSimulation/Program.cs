@@ -128,15 +128,36 @@ while (true)
                     //Reset list
                     shapes.Clear();
 
-
-                    foreach (var line in File.ReadLines(FilePath))
+                    if (useJson)
                     {
-                        var parsedShape = ShapeFactory.Deserialize(line);
-                        if (parsedShape != null)
+                        string Json = File.ReadAllText(FilePath);
+                        var JsonObjects = JsonSerializer.Deserialize<List<JsonElement>>(Json);
+                        if (JsonObjects != null)
                         {
-                            shapes.Add(parsedShape);
+                            foreach (var obj in JsonObjects)
+                            {
+                                var ShapeObj = ShapeFactory.DeserializeJson(obj);
+                                if (ShapeObj != null)
+                                {
+                                    shapes.Add(ShapeObj);
+                                }
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (var line in File.ReadLines(FilePath))
+                        {
+                            var parsedShape = ShapeFactory.Deserialize(line);
+                            if (parsedShape != null)
+                            {
+                                shapes.Add(parsedShape);
+                            }
                         }
                     }
+
+
                     Console.WriteLine("Shapes loaded from {0} text", FilePath);
                 }
             }
@@ -280,6 +301,27 @@ namespace CadSimulation
                     return new Rectangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
                 case "T":
                     return new Triangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
+                default:
+                    return null;
+            }
+
+
+        }
+
+        public static Shape? DeserializeJson(JsonElement json)
+        {
+            var Type = json.GetProperty("Type").GetString();
+
+            switch (Type)
+            {
+                case "Square":
+                    return new Square(json.GetProperty("Side").GetInt32());
+                case "Circle":
+                    return new Circle(json.GetProperty("Radius").GetInt32());
+                case "Rectangle":
+                    return new Rectangle(json.GetProperty("Height").GetInt32(), json.GetProperty("Width").GetInt32());
+                case "Triangle":
+                    return new Triangle(json.GetProperty("Base").GetInt32(), json.GetProperty("Height").GetInt32());
                 default:
                     return null;
             }
