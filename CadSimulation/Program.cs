@@ -95,7 +95,7 @@ while (true)
             }
             continue;
         case 'w':
-            { 
+            {
                 if (File.Exists(FilePath))
                 {
                     //Reset list
@@ -125,6 +125,7 @@ namespace CadSimulation
     {
         void descr();
         double area();
+        object SerializeToJson();
     }
     internal class Square : Shape
     {
@@ -141,6 +142,11 @@ namespace CadSimulation
         void Shape.descr()
         {
             Console.WriteLine($"Square, side: {_side}");
+        }
+
+        object Shape.SerializeToJson()
+        {
+            return new { Type = "Square", Side = _side };
         }
 
         public override string ToString()
@@ -166,6 +172,10 @@ namespace CadSimulation
         {
             Console.WriteLine($"Rectangle, height: {_height}, weidth: {_weidth}");
         }
+        object Shape.SerializeToJson()
+        {
+            return new { Type = "Rectangle", Width = _weidth, Height = _height };
+        }
 
         public override string ToString()
         {
@@ -188,6 +198,10 @@ namespace CadSimulation
         void Shape.descr()
         {
             Console.WriteLine($"Circle, radius: {_radius}");
+        }
+        object Shape.SerializeToJson()
+        {
+            return new { Type = "Circle", Radius = _radius };
         }
 
         public override string ToString()
@@ -212,6 +226,10 @@ namespace CadSimulation
         {
             Console.WriteLine($"Triangle, base: {_base}, height: {_height}");
         }
+        object Shape.SerializeToJson()
+        {
+            return new { Type = "Triangle", Base = _base, Height = _height };
+        }
 
         public override string ToString()
         {
@@ -235,11 +253,11 @@ namespace CadSimulation
                     return new Rectangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
                 case "T":
                     return new Triangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
-                default: 
+                default:
                     return null;
             }
 
-          
+
         }
     }
 }
