@@ -134,8 +134,9 @@ while (true)
                     var Payload = String.Empty;
                     if (useJson)
                     { Payload = JsonSerializer.Serialize(shapes.Select(s => s.SerializeToJson())); }
-                    else {
-                       Payload = string.Join(Environment.NewLine, shapes.Select(s => s.ToString()));
+                    else
+                    {
+                        Payload = string.Join(Environment.NewLine, shapes.Select(s => s.ToString()));
                     }
 
                     using (HttpClient Client = new HttpClient())
@@ -146,8 +147,9 @@ while (true)
                         {
                             Console.WriteLine($"Shapes saved to {HttpService}");
                         }
-                        else {
-                            
+                        else
+                        {
+
                             Console.WriteLine($"Error on Http service: {Response.ReasonPhrase}");
                         }
                     }
@@ -160,43 +162,91 @@ while (true)
             continue;
         case 'w':
             {
-                if (File.Exists(FilePath))
+                if (!String.IsNullOrEmpty(FilePath))
                 {
-                    //Reset list
-                    shapes.Clear();
-
-                    if (useJson)
+                    if (File.Exists(FilePath))
                     {
-                        string Json = File.ReadAllText(FilePath);
-                        var JsonObjects = JsonSerializer.Deserialize<List<JsonElement>>(Json);
-                        if (JsonObjects != null)
+                        //Reset list
+                        shapes.Clear();
+
+                        if (useJson)
                         {
-                            foreach (var obj in JsonObjects)
+                            string Json = File.ReadAllText(FilePath);
+                            var JsonObjects = JsonSerializer.Deserialize<List<JsonElement>>(Json);
+                            if (JsonObjects != null)
                             {
-                                var ShapeObj = ShapeFactory.DeserializeJson(obj);
-                                if (ShapeObj != null)
+                                foreach (var obj in JsonObjects)
                                 {
-                                    shapes.Add(ShapeObj);
+                                    var ShapeObj = ShapeFactory.DeserializeJson(obj);
+                                    if (ShapeObj != null)
+                                    {
+                                        shapes.Add(ShapeObj);
+                                    }
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            foreach (var line in File.ReadLines(FilePath))
+                            {
+                                var parsedShape = ShapeFactory.Deserialize(line);
+                                if (parsedShape != null)
+                                {
+                                    shapes.Add(parsedShape);
                                 }
                             }
                         }
 
-                    }
-                    else
-                    {
-                        foreach (var line in File.ReadLines(FilePath))
-                        {
-                            var parsedShape = ShapeFactory.Deserialize(line);
-                            if (parsedShape != null)
-                            {
-                                shapes.Add(parsedShape);
-                            }
-                        }
-                    }
 
-
-                    Console.WriteLine("Shapes loaded from {0} text", FilePath);
+                        Console.WriteLine("Shapes loaded from {0} text", FilePath);
+                    }
                 }
+                else if (!String.IsNullOrEmpty(HttpService))
+                {
+                    using (HttpClient Client = new HttpClient())
+                    {
+                        //var content = new StringContent(Payload, System.Text.Encoding.UTF8, "application/json");
+                        var Response = Client.GetStringAsync(HttpService).Result;
+
+                        if (Response != null)
+                        {
+                            shapes.Clear();
+                            if (useJson)
+                            {
+                                var JsonObjects = JsonSerializer.Deserialize<List<JsonElement>>(Response);
+                                if (JsonObjects != null)
+                                {
+                                    foreach (var obj in JsonObjects)
+                                    {
+                                        var ShapeObj = ShapeFactory.DeserializeJson(obj);
+                                        if (ShapeObj != null)
+                                        {
+                                            shapes.Add(ShapeObj);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var line in Response.Split(Environment.NewLine))
+                                {
+                                    var parsedShape = ShapeFactory.Deserialize(line);
+                                    if (parsedShape != null)
+                                    {
+                                        shapes.Add(parsedShape);
+                                    }
+                                }
+                            }
+
+                            Console.WriteLine($"Shapes loaded from {HttpService}");
+                        }
+                        
+                       
+                    }
+                }
+
+
             }
             continue;
     }
