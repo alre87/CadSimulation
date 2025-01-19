@@ -122,7 +122,7 @@ while (true)
                         {
                             foreach (var i in shapes)
                             {
-                                SW.WriteLine(i.ToString());
+                                SW.WriteLine(i.SerializeToString());
                             }
                         }
 
@@ -136,7 +136,7 @@ while (true)
                     { Payload = JsonSerializer.Serialize(shapes.Select(s => s.SerializeToJson())); }
                     else
                     {
-                        Payload = string.Join(Environment.NewLine, shapes.Select(s => s.ToString()));
+                        Payload = string.Join(Environment.NewLine, shapes.Select(s => s.SerializeToString()));
                     }
 
                     using (HttpClient Client = new HttpClient())
@@ -241,8 +241,8 @@ while (true)
 
                             Console.WriteLine($"Shapes loaded from {HttpService}");
                         }
-                        
-                       
+
+
                     }
                 }
 
@@ -261,6 +261,7 @@ namespace CadSimulation
         void descr();
         double area();
         object SerializeToJson();
+        string SerializeToString();
     }
     internal class Square : Shape
     {
@@ -282,6 +283,11 @@ namespace CadSimulation
         object Shape.SerializeToJson()
         {
             return new { Type = "Square", Side = _side };
+        }
+
+        string Shape.SerializeToString()
+        {
+            return $"S {_side}";
         }
 
         public override string ToString()
@@ -312,6 +318,11 @@ namespace CadSimulation
             return new { Type = "Rectangle", Width = _weidth, Height = _height };
         }
 
+        string Shape.SerializeToString()
+        {
+            return $"R {_height} {_weidth}";
+        }
+
         public override string ToString()
         {
             return $"R {_height} {_weidth}";
@@ -339,6 +350,11 @@ namespace CadSimulation
             return new { Type = "Circle", Radius = _radius };
         }
 
+        string Shape.SerializeToString()
+        {
+            return $"C {_radius}";
+        }
+
         public override string ToString()
         {
             return $"C {_radius}";
@@ -364,6 +380,11 @@ namespace CadSimulation
         object Shape.SerializeToJson()
         {
             return new { Type = "Triangle", Base = _base, Height = _height };
+        }
+
+        string Shape.SerializeToString()
+        {
+            return $"T {_base} {_height}";
         }
 
         public override string ToString()
