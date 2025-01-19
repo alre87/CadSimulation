@@ -3,9 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using CadSimulation;
+using CadSimulation.Core;
+using CadSimulation.Core.Entity;
+using CadSimulation.Core.Interfaces;
 
-List<Shape> shapes = new List<Shape>();
+List<IShape> shapes = new List<IShape>();
 string FilePath = String.Empty;
 bool useJson = false;
 string HttpService = String.Empty;
@@ -55,7 +57,7 @@ while (true)
     if (k.KeyChar == 'q')
         break;
 
-    Shape? shape = null;
+    IShape? shape = null;
     switch (k.KeyChar)
     {
         case 'l':
@@ -252,189 +254,4 @@ while (true)
     }
     shapes.Add(shape!);
 
-}
-
-namespace CadSimulation
-{
-    internal interface Shape
-    {
-        void descr();
-        double area();
-        object SerializeToJson();
-        string SerializeToString();
-    }
-    internal class Square : Shape
-    {
-        readonly int _side;
-        public Square(int side)
-        {
-            _side = side;
-        }
-        double Shape.area()
-        {
-            return _side * _side;
-        }
-
-        void Shape.descr()
-        {
-            Console.WriteLine($"Square, side: {_side}");
-        }
-
-        object Shape.SerializeToJson()
-        {
-            return new { Type = "Square", Side = _side };
-        }
-
-        string Shape.SerializeToString()
-        {
-            return $"S {_side}";
-        }
-
-        public override string ToString()
-        {
-            return $"S {_side}";
-        }
-    }
-    internal class Rectangle : Shape
-    {
-        readonly int _height;
-        readonly int _weidth;
-        public Rectangle(int height, int weidth)
-        {
-            _height = height;
-            _weidth = weidth;
-        }
-        double Shape.area()
-        {
-            return _height * _weidth;
-        }
-
-        void Shape.descr()
-        {
-            Console.WriteLine($"Rectangle, height: {_height}, weidth: {_weidth}");
-        }
-        object Shape.SerializeToJson()
-        {
-            return new { Type = "Rectangle", Width = _weidth, Height = _height };
-        }
-
-        string Shape.SerializeToString()
-        {
-            return $"R {_height} {_weidth}";
-        }
-
-        public override string ToString()
-        {
-            return $"R {_height} {_weidth}";
-        }
-    }
-    internal class Circle : Shape
-    {
-        int _radius;
-        public Circle(int radius)
-        {
-            _radius = radius;
-        }
-
-        double Shape.area()
-        {
-            return _radius * _radius * 3.1416;
-        }
-
-        void Shape.descr()
-        {
-            Console.WriteLine($"Circle, radius: {_radius}");
-        }
-        object Shape.SerializeToJson()
-        {
-            return new { Type = "Circle", Radius = _radius };
-        }
-
-        string Shape.SerializeToString()
-        {
-            return $"C {_radius}";
-        }
-
-        public override string ToString()
-        {
-            return $"C {_radius}";
-        }
-    }
-    internal class Triangle : Shape
-    {
-        int _base;
-        int _height;
-        public Triangle(int b, int h)
-        {
-            _base = b;
-            _height = h;
-        }
-        double Shape.area()
-        {
-            return _base * _height / 2;
-        }
-        void Shape.descr()
-        {
-            Console.WriteLine($"Triangle, base: {_base}, height: {_height}");
-        }
-        object Shape.SerializeToJson()
-        {
-            return new { Type = "Triangle", Base = _base, Height = _height };
-        }
-
-        string Shape.SerializeToString()
-        {
-            return $"T {_base} {_height}";
-        }
-
-        public override string ToString()
-        {
-            return $"T {_base} {_height}";
-        }
-    }
-
-
-    internal static class ShapeFactory
-    {
-        public static Shape? Deserialize(string data)
-        {
-            string[] stringShape = data.Split(' ');
-            switch (stringShape[0])
-            {
-                case "S":
-                    return new Square(int.Parse(stringShape[1]));
-                case "C":
-                    return new Circle(int.Parse(stringShape[1]));
-                case "R":
-                    return new Rectangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
-                case "T":
-                    return new Triangle(int.Parse(stringShape[1]), int.Parse(stringShape[2]));
-                default:
-                    return null;
-            }
-
-
-        }
-
-        public static Shape? DeserializeJson(JsonElement json)
-        {
-            var Type = json.GetProperty("Type").GetString();
-
-            switch (Type)
-            {
-                case "Square":
-                    return new Square(json.GetProperty("Side").GetInt32());
-                case "Circle":
-                    return new Circle(json.GetProperty("Radius").GetInt32());
-                case "Rectangle":
-                    return new Rectangle(json.GetProperty("Height").GetInt32(), json.GetProperty("Width").GetInt32());
-                case "Triangle":
-                    return new Triangle(json.GetProperty("Base").GetInt32(), json.GetProperty("Height").GetInt32());
-                default:
-                    return null;
-            }
-
-
-        }
-    }
 }
