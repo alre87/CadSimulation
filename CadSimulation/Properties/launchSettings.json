@@ -1,8 +1,8 @@
 {
   "profiles": {
     "CadSimulation": {
-      "commandName": "Project",
-      "commandLineArgs": "--path C:\\TEST\\CadDimulation.txt"
+        "commandName": "Project",
+        "commandLineArgs": "--path C:\\TEST\\CadDimulation.txt --json --url http://127.0.0.1:8282/shapes"
     }
   }
 }
