@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CadSimulation.Core\CadSimulation.Core.csproj" />
+    <ProjectReference Include="..\CadSimulation.Repository\CadSimulation.Repository.csproj" />
+  </ItemGroup>
+
 </Project>
