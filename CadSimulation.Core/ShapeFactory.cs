@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CadSimulation.Core
 {
-    internal static class ShapeFactory
+    public static class ShapeFactory
     {
         public static IShape? Deserialize(string data)
         {

@@ -2,7 +2,7 @@
 
 namespace CadSimulation.Core
 {
-    internal class Rectangle : IShape
+    public class Rectangle : IShape
     {
         readonly int _height;
         readonly int _weidth;

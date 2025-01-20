@@ -2,7 +2,7 @@
 
 namespace CadSimulation.Core
 {
-    internal class Triangle : IShape
+    public class Triangle : IShape
     {
         int _base;
         int _height;

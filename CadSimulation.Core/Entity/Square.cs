@@ -2,7 +2,7 @@
 
 namespace CadSimulation.Core
 {
-    internal class Square : IShape
+    public class Square : IShape
     {
         readonly int _side;
         public Square(int side)

@@ -2,7 +2,7 @@
 
 namespace CadSimulation.Core
 {
-    internal class Circle : IShape
+    public class Circle : IShape
     {
         int _radius;
         public Circle(int radius)

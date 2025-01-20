@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CadSimulation.Application\CadSimulation.Application.csproj" />
+    <ProjectReference Include="..\CadSimulation.Core\CadSimulation.Core.csproj" />
+    <ProjectReference Include="..\CadSimulation.Repository\CadSimulation.Repository.csproj" />
+  </ItemGroup>
+
 </Project>
