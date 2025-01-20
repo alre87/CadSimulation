@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 namespace CadSimulation.Core
 {
-    internal interface IShape
+    public interface IShape
     {
         void descr();
         double area();
