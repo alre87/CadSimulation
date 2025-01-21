@@ -23,7 +23,11 @@ Al momento l'applicazione è impostata per l'utilizzo della cartella C:\temp\
 
 ## Utilizzo sel repository Http
 
-Nel file shapes_server.js (Fornito) è presente il servizio in NodeJs che simula il servizio Http che dev'essere avvito separatemente.
+Nel file shapes_server.js (Fornito) è presente il servizio in NodeJs che simula il servizio Http che dev'essere avvito separatemente.  
+
+  ```
+  http://127.0.0.1:8787/shapes
+  ```
 
 ## Esempi di lancio dell'applicazione
 
