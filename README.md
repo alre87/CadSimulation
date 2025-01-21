@@ -38,7 +38,7 @@ Nel file shapes_server.js (Fornito) è presente il servizio in NodeJs che simula
   - Esempio:
   
   ``` cmd
-  CadSimulation.ConsoleApp.exe --path c:\temp\shapes.txt --json
+  CadSimulation.ConsoleApp.exe --path c:\temp\shapesJson.txt --json
   ```
 
 - Leggere e scrivere i dati su Http in formato Custom
